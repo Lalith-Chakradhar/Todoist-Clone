@@ -145,7 +145,7 @@ export const CustomProvider = ({children}) => {
 
               if (response.ok) {
                 fetchProjects(); 
-                }
+            }
 
         }catch(error)
         {
@@ -310,11 +310,6 @@ export const CustomProvider = ({children}) => {
     };
 
   
-    const handleEditProject = (id) => {
-
-        setProjectBeingModified(allProjects.find((project) => project.id === id));
-        setIsProjectModalVisible(true);
-    }
 
     return (
         <CustomContext.Provider value={{isModalOpen,
@@ -345,8 +340,7 @@ export const CustomProvider = ({children}) => {
         handleProjectCancel,
         showModal,
         handleTaskOk,
-        handleTaskCancel,
-        handleEditProject
+        handleTaskCancel
         }}>
             {children}
         </CustomContext.Provider>

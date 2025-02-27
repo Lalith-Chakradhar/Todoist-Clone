@@ -10,6 +10,7 @@ import { PlusCircleFilled,
 } from '@ant-design/icons'; 
 
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 import useCustomContext from '../CustomContext';
 import TaskModal from '../components/TaskModal';
@@ -19,11 +20,16 @@ import ProjectModal from '../components/ProjectModal';
 
 const MainLayout = () => {
     const {showModal, 
-        allProjects, 
+        allProjects,
+        setIsProjectModalVisible,
+        projectBeingModified,
+        setProjectBeingModified,
         showProjectModal,
-        handleEditProject, 
         handleDeleteProject, 
         makeFavoriteOrUnfavorite} = useCustomContext();
+
+
+    const [editProjectMode, setEditProjectMode] = useState(false);
 
     const items = [
         {
@@ -65,6 +71,18 @@ const MainLayout = () => {
     ];
 
 
+    const handleEditProject = (id) => {
+
+        if(projectBeingModified)
+        {
+            setProjectBeingModified(null);
+        }
+
+        setProjectBeingModified(allProjects.find((project) => project.id === id));
+
+        setIsProjectModalVisible(true);
+        setEditProjectMode(true);
+    }
     
     const favoriteItems =[
         {
@@ -162,7 +180,7 @@ const MainLayout = () => {
     ]
     
     
-    
+
     return (
         <>
             <Splitter
@@ -183,8 +201,7 @@ const MainLayout = () => {
             </Splitter>
             
             <TaskModal />
-            <ProjectModal />
- 
+            <ProjectModal editProjectMode={editProjectMode} setEditProjectMode={setEditProjectMode}/>
         </>
     );
 };

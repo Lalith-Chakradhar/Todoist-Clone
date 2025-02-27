@@ -6,7 +6,7 @@ import { MenuOutlined,
 import useCustomContext from '../CustomContext';
 
 
-const ProjectModal = () => {
+const ProjectModal = ({editProjectMode,setEditProjectMode}) => {
 
     const {projectBeingModified,
         isProjectModalVisible,
@@ -29,12 +29,12 @@ const ProjectModal = () => {
         
   return (
     <>
-         {(projectBeingModified) ? (
+         {(projectBeingModified && editProjectMode) ? (
                 <Modal
                 title={'Edit Project'}
                 open={isProjectModalVisible}
-                onOk={handleEditProjectDataOk}
-                onCancel= {handleProjectCancel}
+                onOk={()=>{handleEditProjectDataOk(); setEditProjectMode(false)}}
+                onCancel= {()=>{handleProjectCancel(); setEditProjectMode(false)}}
             >
 
             <Form  initialValues={
