@@ -3,13 +3,14 @@ import { useParams } from 'react-router-dom';
 import useCustomContext from '../CustomContext';
 import TaskDisplay from '../components/TaskDisplay';
 import { Flex } from 'antd';
-import { Typography } from 'antd';
+import { Typography, Button } from 'antd';
+import { PlusCircleFilled } from '@ant-design/icons';
 
 const { Title } = Typography;
 
 const ProjectPage = () => {
   const { id } = useParams();
-  const { fetchProjects, allProjects, fetchTasks, allTasks } = useCustomContext();
+  const { showModal, fetchProjects, allProjects, fetchTasks, allTasks } = useCustomContext();
 
   const [projectTitle, setProjectTitle] = useState('');
   const [tasksForParticularProjectId, setTasksForParticularProjectId] = useState([]);
@@ -48,7 +49,9 @@ const ProjectPage = () => {
             ) : (
               <p>No tasks found for this project.</p>
             )}
+            <Button icon={<PlusCircleFilled style={{color: '#dc4c3e', fontSize: '1.2rem'}}/>} type="text" onClick={showModal}>Add Task</Button>
           </Flex>
+          
           </div>
         </>
       ) : (

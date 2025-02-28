@@ -1,4 +1,4 @@
-import { Modal, Input, Form, Dropdown, DatePicker, Select, Flex, Button} from 'antd';
+import { Modal, Input, Form, Dropdown, DatePicker, Select, Flex, Button, Typography} from 'antd';
 import {useEffect} from 'react';
 import useCustomContext from '../CustomContext';
 import { v4 as uuidv4} from 'uuid';
@@ -151,8 +151,9 @@ const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited})
                 open={isModalOpen}
                 onOk={handleEditTaskOk}
                 onCancel={handleEditTaskCancel}
-                okText="Edit Task"
+                okText="Save"
                 cancelText="Cancel"
+                okButtonProps={{ danger: true }}
             >
                 <Form layout="vertical"> 
                     <Form.Item style={{marginBottom: 0}}>
@@ -163,7 +164,7 @@ const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited})
                             placeholder="Enter the Task title"
                             variant="borderless"
                             size="large"
-                            style={{paddingLeft: 0}}
+                            style={{paddingLeft: 0, fontSize: '1.2rem', fontWeight: '600'}}
                         />
                     </Form.Item>
                     <Form.Item>
@@ -223,6 +224,7 @@ const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited})
                 onCancel={handleTaskCancel}
                 okText="Add Task"
                 cancelText="Cancel"
+                okButtonProps={{ danger: true }}
             >
                 <Form layout="vertical"> 
                     <Form.Item style={{marginBottom: 0}}>
@@ -233,7 +235,7 @@ const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited})
                             placeholder="Enter the Task title"
                             variant="borderless"
                             size="large"
-                            style={{paddingLeft: 0}}
+                            style={{paddingLeft: 0, fontSize: '1.2rem', fontWeight: '600' }}
                         />
                     </Form.Item>
 

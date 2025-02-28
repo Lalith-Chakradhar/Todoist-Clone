@@ -1,5 +1,5 @@
 import React,{useState} from "react";
-import { Radio, Button, Flex, Space, Typography, Divider} from "antd";
+import {Modal, Radio, Button, Flex, Space, Typography, Divider} from "antd";
 import {EditOutlined, DeleteTwoTone} from '@ant-design/icons';
 import TaskModal from "./TaskModal";
 import useCustomContext from '../CustomContext';
@@ -13,23 +13,28 @@ const TaskDisplay = ({ tasksForParticularProjectId }) => {
  const [editMode, setEditMode] = useState(false);
  const [taskBeingEdited, setTaskBeingEdited] = useState(null);
 
+ const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+ const [taskToDelete, setTaskToDelete] = useState(null);
 
- const handleTaskDelete = async(taskToBeDeleted) => {
 
-
-    setAllTasks((prevTasks) =>
-        prevTasks.filter(task =>
-            task.id !== taskToBeDeleted.id
-        )
-    );
+ const handleTaskDelete = async() => {
+    
+  
+  if(taskToDelete)
+    {
+        setAllTasks((prevTasks) =>
+          prevTasks.filter(task =>
+              task.id !== taskToDelete.id
+          )
+      );
+    }  
 
     
     const token ='f402b0ee01be435cc94f15426476f780d16dbd68';
-
-
+    
     try{
 
-        const response = await fetch(`https://api.todoist.com/rest/v2/tasks/${taskToBeDeleted.id}`, {
+        const response = await fetch(`https://api.todoist.com/rest/v2/tasks/${taskToDelete.id}`, {
             method: 'DELETE',
             headers: { 
               'Authorization': `Bearer ${token}`,
@@ -45,8 +50,17 @@ const TaskDisplay = ({ tasksForParticularProjectId }) => {
     }catch(error)
     {
         console.log(error);
-    } 
+    }
+    finally {
+      setIsDeleteModalVisible(false);
+      setTaskToDelete(null);
+    }
 }
+
+const showDeleteModal = (task) => {
+  setTaskToDelete(task);
+  setIsDeleteModalVisible(true);
+};
 
  function activateEditMode(task){
     setEditMode(true);
@@ -68,7 +82,7 @@ const TaskDisplay = ({ tasksForParticularProjectId }) => {
                 <Space size='large'>
                     <Button style={{display: editMode ? 'none' : 'inline'}} onClick={()=>activateEditMode(task)} icon={<EditOutlined/>}/>
                     {editMode && taskBeingEdited?.id === task.id &&  (<TaskModal editMode={editMode} setEditMode={setEditMode} taskBeingEdited={taskBeingEdited} setTaskBeingEdited={setTaskBeingEdited}/>)}
-                    <Button onClick={()=>handleTaskDelete(task)} icon={<DeleteTwoTone twoToneColor='#dc4c3e'/>}/>
+                    <Button onClick={()=>showDeleteModal(task)} icon={<DeleteTwoTone twoToneColor='#dc4c3e'/>}/>
                 </Space>
             </Flex>
             </Radio>  
@@ -76,6 +90,17 @@ const TaskDisplay = ({ tasksForParticularProjectId }) => {
         <Divider style={{margin: '0em'}}/>
         </div>
       ))}
+
+      <Modal
+        title="Delete task?"
+        open={isDeleteModalVisible}
+        onOk={handleTaskDelete}
+        onCancel={() => setIsDeleteModalVisible(false)}
+        okText="Delete"
+        okButtonProps={{ danger: true }}
+      >
+        <p>The <strong>{taskToDelete?.content}</strong> task will be permanently deleted.</p>
+      </Modal>
     </div>
   );
 };

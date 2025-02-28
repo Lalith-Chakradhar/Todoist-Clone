@@ -31,10 +31,12 @@ const ProjectModal = ({editProjectMode,setEditProjectMode}) => {
     <>
          {(projectBeingModified && editProjectMode) ? (
                 <Modal
-                title={'Edit Project'}
+                title='Edit'
                 open={isProjectModalVisible}
+                okText="Save"
                 onOk={()=>{handleEditProjectDataOk(); setEditProjectMode(false)}}
                 onCancel= {()=>{handleProjectCancel(); setEditProjectMode(false)}}
+                okButtonProps={{ danger: true }}
             >
 
             <Form  initialValues={
@@ -113,9 +115,11 @@ const ProjectModal = ({editProjectMode,setEditProjectMode}) => {
             ) : (
             <Modal
                 title='Add Project'
+                okText="Add Project"
                 open={isProjectModalVisible}
                 onOk={handleAddProjectOk}
                 onCancel= {handleProjectCancel}
+                okButtonProps={{ danger: true }}
             >
 
             <Form  initialValues={

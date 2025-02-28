@@ -1,12 +1,12 @@
  import { Outlet } from 'react-router-dom';
-import { Splitter, Menu, ConfigProvider } from 'antd';
+import { Splitter, Menu, ConfigProvider, Modal } from 'antd';
 import { PlusCircleFilled, 
     SearchOutlined, 
     InboxOutlined,
     CalendarOutlined,
     AppstoreOutlined,
     CheckCircleOutlined,
-    EllipsisOutlined 
+    EllipsisOutlined,
 } from '@ant-design/icons'; 
 
 import { Link } from 'react-router-dom';
@@ -30,11 +30,28 @@ const MainLayout = () => {
 
 
     const [editProjectMode, setEditProjectMode] = useState(false);
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+    const [projectToDelete, setProjectToDelete] = useState(null);
+    
+
+    const showDeleteModal = (project) => {
+        setProjectToDelete(project);
+        setIsDeleteModalVisible(true);
+    };
+    
+    const confirmDelete = () => {
+        if (projectToDelete) {
+            handleDeleteProject(projectToDelete.id);
+            setIsDeleteModalVisible(false);
+            setProjectToDelete(null);
+        }
+    };
+    
 
     const items = [
         {
             key: '1',
-            icon: <PlusCircleFilled />,
+            icon: <PlusCircleFilled style={{color: '#dc4c3e', fontSize: '1.2rem'}}/>,
             label: 'Add task',
             onClick: showModal, // Trigger the modal on click
         },
@@ -103,7 +120,7 @@ const MainLayout = () => {
                             {
                                 key: '3', 
                                 label: 'Delete project',
-                                onClick: ()=>handleDeleteProject(project.id)
+                                onClick: ()=>showDeleteModal(project)
                             },
                             { 
                                 key: '4', 
@@ -177,7 +194,7 @@ const MainLayout = () => {
                             {
                                 key: '3', 
                                 label: 'Delete project',
-                                onClick: ()=>handleDeleteProject(project.id)
+                                onClick: ()=>showDeleteModal(project)
                             },
                             project.is_favorite 
                             ? { key: '4', label: 'Mark as Unfavorite' , onClick: ()=> makeFavoriteOrUnfavorite(project.id)}
@@ -274,6 +291,17 @@ const MainLayout = () => {
             <TaskModal />
             <ProjectModal editProjectMode={editProjectMode} setEditProjectMode={setEditProjectMode}/>
             </ConfigProvider>
+
+            <Modal
+                title="Delete project?"
+                open={isDeleteModalVisible}
+                onOk={confirmDelete}
+                onCancel={() => setIsDeleteModalVisible(false)}
+                okText="Delete"
+                okButtonProps={{ danger: true }}
+            >
+                <p>The <strong>{projectToDelete?.name}</strong> project and all of its tasks will be permanently deleted.</p>
+            </Modal>
         </>
     );
 };
