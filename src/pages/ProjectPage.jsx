@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import useCustomContext from '../CustomContext';
 import TaskDisplay from '../components/TaskDisplay';
+import { Flex } from 'antd';
+import { Typography } from 'antd';
+
+const { Title } = Typography;
 
 const ProjectPage = () => {
   const { id } = useParams();
@@ -36,12 +40,16 @@ const ProjectPage = () => {
     <div>
       {projectTitle ? (
         <>
-          <h1>{projectTitle}</h1>
-          {tasksForParticularProjectId.length > 0 ? (
-            <TaskDisplay tasksForParticularProjectId={tasksForParticularProjectId}/>
-          ) : (
-            <p>No tasks found for this project.</p>
-          )}
+        <div style={{height: '90vh', display: 'flex', alignItems: 'start', justifyContent: 'center'}}>
+         <Flex style={{width: '60%',height: '80%', marginTop: '5em'}}  align={'start'} vertical >
+            <Title level={3}>{projectTitle}</Title>
+            {tasksForParticularProjectId.length > 0 ? (
+              <TaskDisplay tasksForParticularProjectId={tasksForParticularProjectId}/>
+            ) : (
+              <p>No tasks found for this project.</p>
+            )}
+          </Flex>
+          </div>
         </>
       ) : (
         <p>Loading project details...</p>

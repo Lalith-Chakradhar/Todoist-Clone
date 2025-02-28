@@ -1,7 +1,10 @@
-import React,{useState, useEffect} from "react";
-import { Radio } from "antd";
+import React,{useState} from "react";
+import { Radio, Button, Flex, Space, Typography, Divider} from "antd";
+import {EditOutlined, DeleteTwoTone} from '@ant-design/icons';
 import TaskModal from "./TaskModal";
 import useCustomContext from '../CustomContext';
+
+const {Text, Paragraph} = Typography;
 
 
 const TaskDisplay = ({ tasksForParticularProjectId }) => {
@@ -54,17 +57,23 @@ const TaskDisplay = ({ tasksForParticularProjectId }) => {
   return (
     <div>
       {tasksForParticularProjectId.map((task) => (
-        <div key={task.id} style={{width:'70%'}}>
+        <div key={task.id}> 
+        <Space style={{width:'70%', marginBottom: '1em'}}>
            <Radio>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>{task.content}</div>
+            <Flex style={{width:'40vw', marginTop: '2em'}} justify={'space-between'} align={'start'}> 
                 <div>
-                    <button style={{cursor: 'pointer', display: editMode ? 'none' : 'inline'}} onClick={()=>activateEditMode(task)}>Edit</button>
-                    {editMode && taskBeingEdited?.id === task.id &&  (<TaskModal editMode={editMode} setEditMode={setEditMode} taskBeingEdited={taskBeingEdited} setTaskBeingEdited={setTaskBeingEdited}/>)}
-                    <button style={{cursor: 'pointer'}} onClick={()=>handleTaskDelete(task)}>Delete</button>
+                  <Text>{task.content}</Text>
+                  <Paragraph type="secondary">{task.description}</Paragraph>
                 </div>
-            </div>
-            </Radio>
+                <Space size='large'>
+                    <Button style={{display: editMode ? 'none' : 'inline'}} onClick={()=>activateEditMode(task)} icon={<EditOutlined/>}/>
+                    {editMode && taskBeingEdited?.id === task.id &&  (<TaskModal editMode={editMode} setEditMode={setEditMode} taskBeingEdited={taskBeingEdited} setTaskBeingEdited={setTaskBeingEdited}/>)}
+                    <Button onClick={()=>handleTaskDelete(task)} icon={<DeleteTwoTone twoToneColor='#dc4c3e'/>}/>
+                </Space>
+            </Flex>
+            </Radio>  
+        </Space>
+        <Divider style={{margin: '0em'}}/>
         </div>
       ))}
     </div>

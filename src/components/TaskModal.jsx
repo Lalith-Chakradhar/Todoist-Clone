@@ -1,4 +1,4 @@
-import { Modal, Input, Form, Dropdown, DatePicker, Select} from 'antd';
+import { Modal, Input, Form, Dropdown, DatePicker, Select, Flex, Button} from 'antd';
 import {useEffect} from 'react';
 import useCustomContext from '../CustomContext';
 import { v4 as uuidv4} from 'uuid';
@@ -124,12 +124,6 @@ const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited})
                 body: JSON.stringify(taskBeingEdited)
               });
 
-
-            if (response.ok) {
-                fetchProjects();
-                fetchTasks();
-             }
-
         }catch(error)
         {
             console.log(error);
@@ -184,36 +178,40 @@ const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited})
                         />
                     </Form.Item>
 
-                    <Form.Item>
-                        <DatePicker onChange={handleDateChange}/>
-                    </Form.Item>
+                    <Flex gap="large">
+                        <Form.Item>
+                            <DatePicker onChange={handleDateChange}/>
+                        </Form.Item>
 
-                    <Form.Item>
-                    <Dropdown
-                        menu={{
-                            items,
-                            onClick: handleMenuClick,
-                        }}
-                        trigger={["click"]}
-                        >
-                        <a onClick={(e) => e.preventDefault()}> 
-                            {taskBeingEdited.priority ? `Priority ${taskBeingEdited.priority}` : "Priority"}
-                        </a>
-                        </Dropdown>
-                    </Form.Item>
-
-                    <Form.Item>
-                    <Select
-                        style={{
-                            width: 120,
-                        }}
-                        onChange={handleProjectChange}
-                        options={allProjects?.map((project) => ({
-                            value: project.id,
-                            label: project.name,
-                        }))}
-                    />
-                    </Form.Item>
+                        <Form.Item>
+                        <Dropdown
+                            menu={{
+                                items,
+                                onClick: handleMenuClick,
+                            }}
+                            trigger={["click"]}
+                            >
+                            <Button onClick={(e) => e.preventDefault()}> 
+                                {taskBeingEdited.priority ? `Priority ${taskBeingEdited.priority}` : "Priority"}
+                            </Button>
+                            </Dropdown>
+                        </Form.Item>
+                        
+                        </Flex>
+                        
+                        <Form.Item>
+                        <Select
+                            style={{
+                                width: 120,
+                            }}
+                            onChange={handleProjectChange}
+                            options={allProjects?.map((project) => ({
+                                value: project.id,
+                                label: project.name,
+                            }))}
+                        />
+                        </Form.Item>
+                    
                 </Form>
     </Modal>
     )
@@ -238,6 +236,7 @@ const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited})
                             style={{paddingLeft: 0}}
                         />
                     </Form.Item>
+
                     <Form.Item>
                         <Input
                             name="taskDescription"
@@ -250,36 +249,41 @@ const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited})
                         />
                     </Form.Item>
 
-                    <Form.Item>
-                        <DatePicker onChange={handleDateChange}/>
-                    </Form.Item>
+                    <Flex gap="large">
+                        <Form.Item name='date'>
+                            <DatePicker placeholder="Date" onChange={handleDateChange}/>
+                        </Form.Item>
 
-                    <Form.Item>
-                    <Dropdown
-                        menu={{
-                            items,
-                            onClick: handleMenuClick,
-                        }}
-                        trigger={["click"]}
-                        >
-                        <a onClick={(e) => e.preventDefault()}> 
-                            {addTask.Priority ? `Priority ${addTask.Priority}` : "Priority"}
-                        </a>
-                        </Dropdown>
-                    </Form.Item>
+                        <Form.Item>
+                        <Dropdown
+                            menu={{
+                                items,
+                                onClick: handleMenuClick,
+                            }}
+                            trigger={["click"]}
+                            >
+                            <Button onClick={(e) => e.preventDefault()}> 
+                                {addTask.Priority ? `Priority ${addTask.Priority}` : "Priority"}
+                            </Button>
+                            </Dropdown>
+                        </Form.Item>
+                        
+                        </Flex>
 
-                    <Form.Item>
-                    <Select
-                        style={{
-                            width: 120,
-                        }}
-                        onChange={handleProjectChange}
-                        options={allProjects?.map((project) => ({
-                            value: project.id,
-                            label: project.name,
-                        }))}
-                    />
-                    </Form.Item>
+                        <Form.Item name='project'>
+                        <Select
+                            style={{
+                                width: 120,
+                            }}
+                            placeholder="Project"
+                            onChange={handleProjectChange}
+                            options={allProjects?.map((project) => ({
+                                value: project.id,
+                                label: project.name,
+                            }))}
+                        />
+                        </Form.Item>
+                    
                 </Form>
     </Modal>)
     }

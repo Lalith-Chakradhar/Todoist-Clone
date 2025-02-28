@@ -1,5 +1,5 @@
  import { Outlet } from 'react-router-dom';
-import { Splitter, Menu} from 'antd';
+import { Splitter, Menu, ConfigProvider } from 'antd';
 import { PlusCircleFilled, 
     SearchOutlined, 
     InboxOutlined,
@@ -120,8 +120,36 @@ const MainLayout = () => {
                      key: project.id,
                      label: (
                         <div style={{width:'100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                          <Link to={`/project/${project.id}`}><div>{project.name}</div></Link>
-                          <div><Menu  mode="vertical" items={projectOperations}/></div>
+                        <ConfigProvider
+                            theme={{
+                                components: {
+                                    Menu: {
+                                        itemHoverBg: '#ffefe5',
+                                        itemSelectedBg: '#ffefe5',
+                                        itemSelectedColor: '#dc4c3e',
+                                        itemBg: 'none'
+                                    },
+                                },
+                            }}
+                            >
+                          <Link to={`/project/${project.id}`}><div># {project.name}</div></Link>
+                          <div>
+                          <ConfigProvider
+                            theme={{
+                                components: {
+                                    Menu: {
+                                        itemHoverBg: '#ffefe5',
+                                        itemSelectedBg: '#ffefe5',
+                                        itemSelectedColor: '#dc4c3e',
+                                        itemBg: 'none'
+                                    },
+                                },
+                            }}
+                            >
+                                <Menu  mode="vertical" items={projectOperations}/>
+                            </ConfigProvider>
+                            </div>
+                          </ConfigProvider>
                         </div>
                       ),
                     })
@@ -163,9 +191,40 @@ const MainLayout = () => {
                     {
                      key: project.id,
                      label: (
+                         
                         <div style={{width:'100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                          <Link to={`/project/${project.id}`}><div>{project.name}</div></Link>
-                          <div><Menu  mode="vertical" items={projectOperations}/></div>
+
+                        <ConfigProvider
+                            theme={{
+                                components: {
+                                    Menu: {
+                                        itemHoverBg: '#ffefe5',
+                                        itemSelectedBg: '#ffefe5',
+                                        itemSelectedColor: '#dc4c3e',
+                                        itemBg: 'none'
+                                    },
+                                },
+                            }}
+                            >
+                          <Link to={`/project/${project.id}`}><div># {project.name}</div></Link>
+                          <div>
+                          <ConfigProvider
+                            theme={{
+                                components: {
+                                    Menu: {
+                                        itemHoverBg: '#ffefe5',
+                                        itemSelectedBg: '#ffefe5',
+                                        itemSelectedColor: '#dc4c3e',
+                                        itemBg: 'none'
+                                    },
+                                },
+                            }}
+                            >
+                                <Menu  mode="vertical" items={projectOperations}/>
+                            </ConfigProvider>
+                            </div>
+
+                            </ConfigProvider>
                         </div>
                       )
                     })
@@ -183,15 +242,27 @@ const MainLayout = () => {
 
     return (
         <>
+        <ConfigProvider
+            theme={{
+                components: {
+                Menu: {
+                    itemHoverBg: '#ffefe5',
+                    itemSelectedBg: '#ffefe5',
+                    itemSelectedColor: '#dc4c3e'
+                },
+                },
+            }}
+            >
             <Splitter
                 style={{
                     height: '90vh',
-                }}>
-                <Splitter.Panel defaultSize="20%" min="15%" max="25%">
+                }}
+                >
+                <Splitter.Panel defaultSize="20%" min="15%" max="25%" className='h-screen bg-vista-white'>
                     
-                    <Menu items={items} />
-                    <Menu  mode="inline" items={favoriteItems}/>
-                    <Menu  mode="inline" items={projectItems}/>
+                    <Menu items={items} className='mt-6 bg-vista-white hover:nth'/>
+                    <Menu  mode="inline" items={favoriteItems} className='mt-6 bg-vista-white'/>
+                    <Menu  mode="inline" items={projectItems} className='mt-6 bg-vista-white'/>
 
                 </Splitter.Panel>
 
@@ -202,6 +273,7 @@ const MainLayout = () => {
             
             <TaskModal />
             <ProjectModal editProjectMode={editProjectMode} setEditProjectMode={setEditProjectMode}/>
+            </ConfigProvider>
         </>
     );
 };
