@@ -101,13 +101,6 @@ const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited})
 
       const handleEditTaskOk = async() => {
 
-
-        setAllTasks((prevTasks) =>
-            prevTasks.map(task =>
-                task.id === taskBeingEdited.id ? { ...task, ...taskBeingEdited } : task
-            )
-        );
-
         
         const token ='f402b0ee01be435cc94f15426476f780d16dbd68';
 
@@ -123,6 +116,13 @@ const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited})
                 },
                 body: JSON.stringify(taskBeingEdited)
               });
+
+
+              setAllTasks((prevTasks) =>
+                prevTasks.map(task =>
+                    task.id === taskBeingEdited.id ? { ...task, ...taskBeingEdited } : task
+                )
+            );
 
         }catch(error)
         {
