@@ -26,7 +26,12 @@ const ProjectModal = ({editProjectMode,setEditProjectMode}) => {
             'Lavender', 'Magenta', 'Salmon', 'Charcoal', 'Grey', 'Taupe'
         ];
     
-        
+    
+    function editProjectOk(){
+        handleEditProjectDataOk(); 
+        setEditProjectMode(false);
+    } 
+    
   return (
     <>
          {(projectBeingModified && editProjectMode) ? (
@@ -34,8 +39,8 @@ const ProjectModal = ({editProjectMode,setEditProjectMode}) => {
                 title='Edit'
                 open={isProjectModalVisible}
                 okText="Save"
-                onOk={()=>{handleEditProjectDataOk(); setEditProjectMode(false)}}
-                onCancel= {()=>{handleProjectCancel(); setEditProjectMode(false)}}
+                onOk={()=>{}}
+                onCancel= {editProjectOk}
                 okButtonProps={{ danger: true }}
             >
 

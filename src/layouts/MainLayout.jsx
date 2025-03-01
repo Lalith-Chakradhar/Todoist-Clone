@@ -95,7 +95,9 @@ const MainLayout = () => {
             setProjectBeingModified(null);
         }
 
-        setProjectBeingModified(allProjects.find((project) => project.id === id));
+        const projectToBeEdited = allProjects.find((project) => project.id === id);
+
+        setProjectBeingModified(projectToBeEdited);
 
         setIsProjectModalVisible(true);
         setEditProjectMode(true);

@@ -1,22 +1,16 @@
-import { Modal, Input, Form, Dropdown, DatePicker, Select, Flex, Button, Typography} from 'antd';
-import {useEffect} from 'react';
+import { Modal, Input, Form, Dropdown, DatePicker, Select, Flex, Button} from 'antd';
 import useCustomContext from '../CustomContext';
-import { v4 as uuidv4} from 'uuid';
-import axios from 'axios';
 
 
 const TaskModal = () => {
 
     const {isModalOpen, 
-        setIsModalOpen, 
         addTask, 
         handleTaskOk, 
         handleTaskCancel,
         allProjects, 
         setAddTask,
-        setAllTasks, 
         editMode, 
-        setEditMode, 
         taskBeingEdited, 
         setTaskBeingEdited,
         handleEditTaskOk,

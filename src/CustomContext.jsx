@@ -1,6 +1,7 @@
 import React, {createContext, useState, useContext, useEffect } from 'react';
 import { v4 as uuidv4} from 'uuid';
 import axios from 'axios';
+import {config} from './config/config';
 
 const CustomContext = createContext();
 
@@ -41,13 +42,11 @@ export const CustomProvider = ({children}) => {
     const [taskToDelete, setTaskToDelete] = useState(null);
 
     const handleTaskDelete = async() => { 
-    
-        const token ='f402b0ee01be435cc94f15426476f780d16dbd68';
         
         try{
             const response = await axios.delete(`https://api.todoist.com/rest/v2/tasks/${taskToDelete.id}`, {
                 headers: { 
-                  'Authorization': `Bearer ${token}`,
+                  'Authorization': `Bearer ${config.apiToken}`,
                 }
               });
     
@@ -105,11 +104,10 @@ export const CustomProvider = ({children}) => {
 
     async function fetchProjects(){
 
-        const token ='f402b0ee01be435cc94f15426476f780d16dbd68';
         try{
             const response = await axios.get('https://api.todoist.com/rest/v2/projects',{
                 headers: {
-                'Authorization': `Bearer ${token}`,
+                'Authorization': `Bearer ${config.apiToken}`,
                 }
             })
 
@@ -121,11 +119,11 @@ export const CustomProvider = ({children}) => {
     }
 
     async function fetchTasks(){
-        const token ='f402b0ee01be435cc94f15426476f780d16dbd68';
+
         try{
             const response = await axios.get('https://api.todoist.com/rest/v2/tasks',{
                 headers: {
-                'Authorization': `Bearer ${token}`,
+                'Authorization': `Bearer ${config.apiToken}`,
                 }
             })
 
@@ -144,14 +142,12 @@ export const CustomProvider = ({children}) => {
 
     const handleAddProjectOk = async () => {
 
-        const token ='f402b0ee01be435cc94f15426476f780d16dbd68';
-
         try{ 
             const response = await axios.post('https://api.todoist.com/rest/v2/projects',addProjectDetails, {
                 headers: {
                   'Content-Type': 'application/json',
                   'X-Request-Id': uuidv4(),
-                  'Authorization': `Bearer ${token}`,
+                  'Authorization': `Bearer ${config.apiToken}`,
                 }
               });
 
@@ -176,14 +172,13 @@ export const CustomProvider = ({children}) => {
 
     const handleEditProjectDataOk = async() => { 
 
-        const token ='f402b0ee01be435cc94f15426476f780d16dbd68';
 
         try{
 
             const response = await axios.post(`https://api.todoist.com/rest/v2/projects/${projectBeingModified.id}`,projectBeingModified, {
                 headers: {
                   'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`,
+                  'Authorization': `Bearer ${config.apiToken}`,
                 }
               });
 
@@ -208,12 +203,11 @@ export const CustomProvider = ({children}) => {
 
     const handleDeleteProject = async(id)=>{
 
-        const token ='f402b0ee01be435cc94f15426476f780d16dbd68';
         try{
 
             const response = await axios.delete(`https://api.todoist.com/rest/v2/projects/${id}`, { 
                 headers: { 
-                  'Authorization': `Bearer ${token}`,
+                  'Authorization': `Bearer ${config.apiToken}`,
                 }
               });
 
@@ -233,19 +227,22 @@ export const CustomProvider = ({children}) => {
 
         const updatedProject = { ...project, is_favorite: !project.is_favorite };
 
-        const token ='f402b0ee01be435cc94f15426476f780d16dbd68';
 
         try{ 
             const response = await axios.post(`https://api.todoist.com/rest/v2/projects/${id}`, updatedProject, {
                 headers: {
                   'Content-Type': 'application/json', 
-                  'Authorization': `Bearer ${token}`,
+                  'Authorization': `Bearer ${config.apiToken}`,
                 }
               });
 
-              if (response.ok) {
-                fetchProjects();
-            }
+              if (response.status === 200) {
+                    setAllProjects(prevProjects => 
+                        prevProjects.map(project =>
+                            project.id === id ? {...project, ...response.data} : project
+                        )
+                    )
+                }
 
         }catch(error)
         {
@@ -307,7 +304,6 @@ export const CustomProvider = ({children}) => {
 
     const handleTaskOk = async() => {
 
-        const token ='f402b0ee01be435cc94f15426476f780d16dbd68';
 
         const addTaskObject = {
                                     "content":addTask.taskName,
@@ -324,7 +320,7 @@ export const CustomProvider = ({children}) => {
                 headers: {
                   'Content-Type': 'application/json',
                   'X-Request-Id': uuidv4(),
-                  'Authorization': `Bearer ${token}`,
+                  'Authorization': `Bearer ${config.apiToken}`,
                 }
               });
 
@@ -356,17 +352,13 @@ export const CustomProvider = ({children}) => {
 
     const handleEditTaskOk = async() => {
 
-        
-        const token ='f402b0ee01be435cc94f15426476f780d16dbd68';
-
-
         try{
 
             const response = await axios.post(`https://api.todoist.com/rest/v2/tasks/${taskBeingEdited.id}`, taskBeingEdited, { 
                 headers: {
                   'Content-Type': 'application/json',
                   'X-Request-Id': uuidv4(),
-                  'Authorization': `Bearer ${token}`,
+                  'Authorization': `Bearer ${config.apiToken}`,
                 }
               });
 

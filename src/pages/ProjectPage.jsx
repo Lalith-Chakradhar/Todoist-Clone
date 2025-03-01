@@ -34,7 +34,6 @@ const ProjectPage = () => {
       setTasksForParticularProjectId(tasks);
     }
 
-    
   }, [allTasks, id]); // Runs when allTasks updates
 
   return (
