@@ -2,13 +2,29 @@ import { Modal, Input, Form, Dropdown, DatePicker, Select, Flex, Button, Typogra
 import {useEffect} from 'react';
 import useCustomContext from '../CustomContext';
 import { v4 as uuidv4} from 'uuid';
-
-const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited}) => {
-
-    const {isModalOpen, setIsModalOpen, addTask, handleTaskOk, handleTaskCancel,allProjects, setAddTask, fetchProjects, allTasks, fetchTasks, setAllTasks} = useCustomContext();
+import axios from 'axios';
 
 
-    const handleChange = (e) => {
+const TaskModal = () => {
+
+    const {isModalOpen, 
+        setIsModalOpen, 
+        addTask, 
+        handleTaskOk, 
+        handleTaskCancel,
+        allProjects, 
+        setAddTask,
+        setAllTasks, 
+        editMode, 
+        setEditMode, 
+        taskBeingEdited, 
+        setTaskBeingEdited,
+        handleEditTaskOk,
+        handleEditTaskCancel
+        } = useCustomContext();
+
+
+    const handleTaskChange = (e) => {
         const { name, value } = e.target;
 
         if(editMode)
@@ -87,9 +103,6 @@ const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited})
         
       };
 
-      useEffect(() => {
-          fetchProjects();
-        }, []);
 
     const items = [
         { label: "Priority 1", key: "1" },
@@ -97,51 +110,8 @@ const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited})
         { label: "Priority 3", key: "3" },
         { label: "Priority 4", key: "4" },
       ];
-    
 
-      const handleEditTaskOk = async() => {
-
-        
-        const token ='f402b0ee01be435cc94f15426476f780d16dbd68';
-
-
-        try{
-
-            const response = await fetch(`https://api.todoist.com/rest/v2/tasks/${taskBeingEdited.id}`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'X-Request-Id': uuidv4(),
-                  'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify(taskBeingEdited)
-              });
-
-
-              setAllTasks((prevTasks) =>
-                prevTasks.map(task =>
-                    task.id === taskBeingEdited.id ? { ...task, ...taskBeingEdited } : task
-                )
-            );
-
-        }catch(error)
-        {
-            console.log(error);
-        }
-        finally{
-            setIsModalOpen(false);
-            setTaskBeingEdited(null);
-            setEditMode(false);
-        }
-        
-    };
-
-    const handleEditTaskCancel = () => {
-        setIsModalOpen(false);
-        setTaskBeingEdited(null);
-        setEditMode(false);
-    };
-
+      
 
   return (
     <>
@@ -160,7 +130,7 @@ const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited})
                         <Input 
                             name="content"
                             value={taskBeingEdited.content} 
-                            onChange={handleChange} 
+                            onChange={handleTaskChange} 
                             placeholder="Enter the Task title"
                             variant="borderless"
                             size="large"
@@ -171,7 +141,7 @@ const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited})
                         <Input
                             name="description"
                             value={taskBeingEdited.description} 
-                            onChange={handleChange} 
+                            onChange={handleTaskChange} 
                             placeholder="Description"
                             variant="borderless"
                             size="small"
@@ -231,7 +201,7 @@ const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited})
                         <Input 
                             name="taskName"
                             value={addTask.taskName} 
-                            onChange={handleChange} 
+                            onChange={handleTaskChange} 
                             placeholder="Enter the Task title"
                             variant="borderless"
                             size="large"
@@ -243,7 +213,7 @@ const TaskModal = ({editMode, setEditMode, taskBeingEdited, setTaskBeingEdited})
                         <Input
                             name="taskDescription"
                             value={addTask.taskDescription} 
-                            onChange={handleChange} 
+                            onChange={handleTaskChange} 
                             placeholder="Description"
                             variant="borderless"
                             size="small"
