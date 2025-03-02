@@ -51,7 +51,7 @@ export const CustomProvider = ({children}) => {
               });
     
     
-             if(response.status === 200)
+             if(response.status === 204)
              {
                     setAllTasks((prevTasks) =>
                       prevTasks.filter(task =>
@@ -211,7 +211,7 @@ export const CustomProvider = ({children}) => {
                 }
               });
 
-              if (response.status === 200) { 
+              if (response.status === 204) { 
                 setAllProjects(prevProjects => prevProjects.filter(project => project.id !== id));
               }
 
@@ -281,19 +281,13 @@ export const CustomProvider = ({children}) => {
     const handleProjectCancel = () => {
         setIsProjectModalVisible(false);
 
-        if(projectBeingModified)
-        {
-            setProjectBeingModified(null);
-        }
-        else
-        {
-            setAddProjectDetails({
-                name: '',
-                color: '',
-                is_favorite: false,
-                view_style: 'list'
-            });
-        }
+        setProjectBeingModified(null);
+        setAddProjectDetails({
+            name: '',
+            color: '',
+            is_favorite: false,
+            view_style: 'list'
+        });
     };
     
 

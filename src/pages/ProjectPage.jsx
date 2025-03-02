@@ -2,18 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import useCustomContext from '../CustomContext';
 import TaskDisplay from '../components/TaskDisplay';
-import { Flex } from 'antd';
-import { Typography, Button } from 'antd';
+import { Flex, Typography, Button } from 'antd';
 import { PlusCircleFilled } from '@ant-design/icons';
+
+import AddTaskBox from '../components/AddTaskBox';
 
 const { Title } = Typography;
 
 const ProjectPage = () => {
   const { id } = useParams();
-  const { showModal, fetchProjects, allProjects, fetchTasks, allTasks } = useCustomContext();
+  const { fetchProjects, allProjects, fetchTasks, allTasks } = useCustomContext();
 
   const [projectTitle, setProjectTitle] = useState('');
   const [tasksForParticularProjectId, setTasksForParticularProjectId] = useState([]);
+
+  const [showAddTaskBox, setShowAddTaskBox] = useState(false);
 
   useEffect(() => {
     fetchProjects();
@@ -40,17 +43,24 @@ const ProjectPage = () => {
     <div>
       {projectTitle ? (
         <>
-        <div style={{height: '90vh', display: 'flex', alignItems: 'start', justifyContent: 'center'}}>
-         <Flex style={{width: '60%',height: '80%', marginTop: '5em'}}  align={'start'} vertical >
-            <Title level={3}>{projectTitle}</Title>
-            {tasksForParticularProjectId.length > 0 ? (
-              <TaskDisplay tasksForParticularProjectId={tasksForParticularProjectId}/>
-            ) : (
-              <p>No tasks found for this project.</p>
-            )}
-            <Button icon={<PlusCircleFilled style={{color: '#dc4c3e', fontSize: '1.2rem'}}/>} type="text" onClick={showModal}>Add Task</Button>
-          </Flex>
+          <div style={{height: '90vh', display: 'flex', alignItems: 'start', justifyContent: 'center'}}>
           
+            <Flex style={{width: '60%',height: '80%', marginTop: '5em'}}  align={'start'} vertical >
+                
+                <Title level={3}>{projectTitle}</Title>
+                
+                {tasksForParticularProjectId.length > 0 && (
+                  <TaskDisplay tasksForParticularProjectId={tasksForParticularProjectId}/>
+                )}
+                
+                {(showAddTaskBox) ? 
+                (<AddTaskBox setShowAddTaskBox={setShowAddTaskBox}/>) : 
+                (<Button 
+                  icon={<PlusCircleFilled style={{ color: '#dc4c3e', fontSize: '1.2rem'}}/>} 
+                  type="text" 
+                  onClick={()=>setShowAddTaskBox(true)}>Add Task</Button>)}
+            </Flex>
+            
           </div>
         </>
       ) : (

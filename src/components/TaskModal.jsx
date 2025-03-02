@@ -1,6 +1,8 @@
 import { Modal, Input, Form, Dropdown, DatePicker, Select, Flex, Button} from 'antd';
 import useCustomContext from '../CustomContext';
 
+import { priorityLabels } from '../constants/constants';
+
 
 const TaskModal = () => {
 
@@ -97,14 +99,6 @@ const TaskModal = () => {
         
       };
 
-
-    const items = [
-        { label: "Priority 1", key: "1" },
-        { label: "Priority 2", key: "2" },
-        { label: "Priority 3", key: "3" },
-        { label: "Priority 4", key: "4" },
-      ];
-
       
 
   return (
@@ -117,7 +111,7 @@ const TaskModal = () => {
                 onCancel={handleEditTaskCancel}
                 okText="Save"
                 cancelText="Cancel"
-                okButtonProps={{ danger: true }}
+                okButtonProps={{ danger: true, disabled: taskBeingEdited.content.length === 0}}
             >
                 <Form layout="vertical"> 
                     <Form.Item style={{marginBottom: 0}}>
@@ -149,16 +143,15 @@ const TaskModal = () => {
                         </Form.Item>
 
                         <Form.Item>
-                        <Dropdown
-                            menu={{
-                                items,
-                                onClick: handleMenuClick,
-                            }}
-                            trigger={["click"]}
+                            <Dropdown
+                                menu={{
+                                    items: priorityLabels,
+                                    onClick: handleMenuClick,
+                                }}
                             >
-                            <Button onClick={(e) => e.preventDefault()}> 
-                                {taskBeingEdited.priority ? `Priority ${taskBeingEdited.priority}` : "Priority"}
-                            </Button>
+                                <Button onClick={(e) => e.preventDefault()}> 
+                                    {taskBeingEdited.priority ? `Priority ${taskBeingEdited.priority}` : "Priority"}
+                                </Button>
                             </Dropdown>
                         </Form.Item>
                         
@@ -182,13 +175,13 @@ const TaskModal = () => {
     )
     :
     (
-    <Modal 
+            <Modal 
                 open={isModalOpen}
                 onOk={handleTaskOk}
                 onCancel={handleTaskCancel}
                 okText="Add Task"
                 cancelText="Cancel"
-                okButtonProps={{ danger: true }}
+                okButtonProps={{ danger: true, disabled: addTask.taskName.length === 0 }}
             >
                 <Form layout="vertical"> 
                     <Form.Item style={{marginBottom: 0}}>
@@ -221,16 +214,15 @@ const TaskModal = () => {
                         </Form.Item>
 
                         <Form.Item>
-                        <Dropdown
-                            menu={{
-                                items,
-                                onClick: handleMenuClick,
-                            }}
-                            trigger={["click"]}
+                            <Dropdown
+                                menu={{
+                                    items: priorityLabels,
+                                    onClick: handleMenuClick,
+                                }}
                             >
-                            <Button onClick={(e) => e.preventDefault()}> 
-                                {addTask.Priority ? `Priority ${addTask.Priority}` : "Priority"}
-                            </Button>
+                                <Button onClick={(e) => e.preventDefault()}> 
+                                    {addTask.Priority ? `Priority ${addTask.Priority}` : "Priority"}
+                                </Button>
                             </Dropdown>
                         </Form.Item>
                         
