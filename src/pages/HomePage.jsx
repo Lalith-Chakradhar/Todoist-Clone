@@ -1,9 +1,13 @@
-
-import { Image, Flex, Typography } from "antd";
+import { useEffect } from "react";
+import { Image, Flex, Typography} from "antd";
 
 const {Title, Paragraph} = Typography;
 
 function HomePage() {
+
+    useEffect(()=>{
+        document.title = "Home Page";
+    },[])
 
     return(
         <>

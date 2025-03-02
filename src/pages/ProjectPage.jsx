@@ -23,10 +23,15 @@ const ProjectPage = () => {
     fetchTasks();
   }, []);
 
+
   useEffect(() => {
     if (allProjects && allProjects.length > 0) {
       const project = allProjects.find((project) => project.id === id);
-      if (project) setProjectTitle(project.name);
+      if (project) 
+      {
+        setProjectTitle(project.name);
+        document.title = project.name;
+      }
     }
   }, [allProjects, id]); // Runs when allProjects updates
 
