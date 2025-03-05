@@ -9,25 +9,37 @@ import { PlusCircleFilled,
     EllipsisOutlined,
 } from '@ant-design/icons'; 
 
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
+import { 
+    fetchProjects, 
+    deleteProject,
+    toggleFavoriteInBackend,
+    toggleFavorite,
+    allProjects, 
+    isProjectDataLoading, 
+    projectDataError,
+    setIsProjectModalVisible,
+    setProjectBeingModified
+ } from '../features/projects/projectSlice';
 
-import useCustomContext from '../CustomContext';
 import TaskModal from '../components/TaskModal';
 import ProjectModal from '../components/ProjectModal';
 
 
 
 const MainLayout = () => {
-    const {showModal, 
-        allProjects,
-        setIsProjectModalVisible,
-        projectBeingModified,
-        setProjectBeingModified,
-        showProjectModal,
-        handleDeleteProject, 
-        makeFavoriteOrUnfavorite} = useCustomContext();
 
+    const dispatch = useDispatch();
+    const projects = useSelector(allProjects);
+    const projectBeingModified = useSelector((state)=> state.project.projectBeingModified);
+    const loading = useSelector(isProjectDataLoading);
+    const error = useSelector(projectDataError);
+
+    useEffect(()=>{
+        dispatch(fetchProjects());
+    }, [dispatch]);
 
     const [editProjectMode, setEditProjectMode] = useState(false);
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -41,7 +53,7 @@ const MainLayout = () => {
     
     const confirmDelete = () => {
         if (projectToDelete) {
-            handleDeleteProject(projectToDelete.id);
+            dispatch(deleteProject(projectToDelete.id))
             setIsDeleteModalVisible(false);
             setProjectToDelete(null);
         }
@@ -53,7 +65,7 @@ const MainLayout = () => {
             key: '1',
             icon: <PlusCircleFilled style={{color: '#dc4c3e', fontSize: '1.2rem'}}/>,
             label: 'Add task',
-            onClick: showModal, // Trigger the modal on click
+            // onClick: showModal, // Trigger the modal on click
         },
         {
             key: '2',
@@ -87,27 +99,39 @@ const MainLayout = () => {
         },
     ];
 
+    const showProjectModal = ()=>{
+
+        dispatch(setIsProjectModalVisible(true));
+    }
 
     const handleEditProject = (id) => {
 
+
         if(projectBeingModified)
         {
-            setProjectBeingModified(null);
+            dispatch(setProjectBeingModified(null));
         }
 
-        const projectToBeEdited = allProjects.find((project) => project.id === id);
+        const projectToBeEdited = projects.find((project) => project.id === id);
 
-        setProjectBeingModified(projectToBeEdited);
+        dispatch(setProjectBeingModified(projectToBeEdited));
 
-        setIsProjectModalVisible(true);
+        dispatch(setIsProjectModalVisible(true));
+
         setEditProjectMode(true);
+    }
+    
+    const makeFavoriteOrUnfavorite = (id) => {
+        dispatch(toggleFavorite(id));
+
+        dispatch(toggleFavoriteInBackend(id));
     }
     
     const favoriteItems =[
         {
             key: '1',
             label: 'Favorites',
-            children: allProjects?.map((project)=> {
+            children: projects?.map((project)=> {
                 
                 const projectOperations = [
                     {
@@ -181,7 +205,7 @@ const MainLayout = () => {
         {
             key: '1',
             label: 'My Projects',
-            children: allProjects?.map((project)=> {
+            children: projects?.map((project)=> {
                 
                 const projectOperations = [
                     {
@@ -290,7 +314,7 @@ const MainLayout = () => {
                 </Splitter.Panel>
             </Splitter>
             
-            <TaskModal />
+            {/* <TaskModal /> */}
             <ProjectModal editProjectMode={editProjectMode} setEditProjectMode={setEditProjectMode}/>
             </ConfigProvider>
 

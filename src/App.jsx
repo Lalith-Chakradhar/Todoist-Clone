@@ -5,7 +5,9 @@ import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/HomePage';
 import ProjectPage from './pages/ProjectPage';
 
-import { CustomProvider } from './CustomContext';
+import {Provider} from 'react-redux';
+import store from './app/store';
+
 
 function App() {
   
@@ -18,9 +20,9 @@ function App() {
     )
   );
 
-  return (<CustomProvider>
+  return (<Provider store={store}>
             <RouterProvider router={router}/>
-          </CustomProvider>);
+          </Provider>);
 }
 
 export default App;
