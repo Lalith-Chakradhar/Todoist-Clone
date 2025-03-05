@@ -5,8 +5,8 @@ import TaskModal from "./TaskModal";
 
 import { useSelector, useDispatch } from 'react-redux';
 import { setTaskModalVisible, 
-  setTaskBeingEdited, 
-  toggleTaskCompletion,
+  setTaskBeingEdited,
+  setEditMode,
   setTaskToDelete,
   setDeleteModalVisible,
   deleteTask } from '../features/tasks/taskSlice';
@@ -16,20 +16,13 @@ const {Text, Paragraph} = Typography;
 
 const TaskDisplay = ({ tasksForParticularProjectId }) => {
 
-//  const {editMode, 
-//   isDeleteModalVisible, 
-//   handleTaskDelete, 
-//   taskToDelete, 
-//   activateEditMode,
-//   taskBeingEdited,
-//   showDeleteModal, 
-//   setIsDeleteModalVisible} = useCustomContext();
 
   const dispatch = useDispatch();
-  const { allTasks, isModalOpen, taskBeingEdited, editMode, isDeleteModalVisible, taskToDelete } = useSelector(state => state.task);
+  const { taskBeingEdited, editMode, isDeleteModalVisible, taskToDelete } = useSelector(state => state.task);
 
 
   const activateEditMode = (task) => {
+    dispatch(setEditMode(true));
     dispatch(setTaskBeingEdited(task));
     dispatch(setTaskModalVisible(true));
   };
@@ -61,7 +54,7 @@ const TaskDisplay = ({ tasksForParticularProjectId }) => {
                 </div>
                 <Space size='large'>
                     <Button style={{display: editMode ? 'none' : 'inline'}} onClick={()=>activateEditMode(task)} icon={<EditOutlined/>}/>
-                    {/* {editMode && taskBeingEdited?.id === task.id &&  (<TaskModal/>)} */}
+                    {editMode && taskBeingEdited?.id === task.id &&  (<TaskModal/>)}
                     <Button onClick={()=>showDeleteModal(task)} icon={<DeleteTwoTone twoToneColor='#dc4c3e'/>}/>
                 </Space>
             </Flex>

@@ -4,13 +4,11 @@ import { config } from '../../config/config';
 
 const initialState = {
     allTasks: [],
-    isModalOpen: false,
+    isTaskModalOpen: false,
     taskBeingEdited: null,
     isDeleteModalVisible: false,
     taskToDelete: null,
     editMode: false,
-    loading: false,
-    error: null,
   };
 
 
@@ -56,6 +54,8 @@ export const addTask = createAsyncThunk(
 export const updateTask = createAsyncThunk(
   'task/updateTask',
   async ({ id, updatedData }, { rejectWithValue }) => {
+      
+
     try {
       const response = await axios.post(
         `https://api.todoist.com/rest/v2/tasks/${id}`,
@@ -95,14 +95,16 @@ const taskSlice = createSlice({
   initialState,
   reducers: {
     setTaskModalVisible: (state, action) => {
-      state.isModalOpen = action.payload;
+      state.isTaskModalOpen = action.payload;
     },
     setDeleteModalVisible: (state, action) =>{
       state.isDeleteModalVisible = action.payload;
     },
+    setEditMode: (state,action) =>{
+      state.editMode = action.payload;
+    },
     setTaskBeingEdited: (state, action) => {
       state.taskBeingEdited = action.payload;
-      state.editMode = !action.payload;
     },
     setTaskToDelete(state, action){
       state.taskToDelete = action.payload;
@@ -116,25 +118,16 @@ const taskSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchTasks.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
       .addCase(fetchTasks.fulfilled, (state, action) => {
-        state.loading = false;
         state.allTasks = action.payload;
-      })
-      .addCase(fetchTasks.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
       })
       .addCase(addTask.fulfilled, (state, action) => {
         state.allTasks.push(action.payload);
       })
       .addCase(updateTask.fulfilled, (state, action) => {
         state.allTasks = state.allTasks.map((task) =>
-          task.id === action.payload.id ? action.payload : task
-        );
+          task.id === action.payload.id ? { ...task, ...action.payload } : task
+        );        
       })
       .addCase(deleteTask.fulfilled, (state, action) => {
         state.allTasks = state.allTasks.filter((task) => task.id !== action.payload);
@@ -148,7 +141,8 @@ const taskSlice = createSlice({
 export const allTasks = (state) => state.task.allTasks;
 
 export const { 
-  setTaskModalVisible, 
+  setTaskModalVisible,
+  setEditMode, 
   setTaskBeingEdited, 
   setTaskToDelete,
   setDeleteModalVisible,

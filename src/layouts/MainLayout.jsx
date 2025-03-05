@@ -17,12 +17,12 @@ import {
     deleteProject,
     toggleFavoriteInBackend,
     toggleFavorite,
-    allProjects, 
-    isProjectDataLoading, 
-    projectDataError,
+    allProjects,
     setIsProjectModalVisible,
     setProjectBeingModified
  } from '../features/projects/projectSlice';
+
+ import {setTaskModalVisible} from '../features/tasks/taskSlice';
 
 import TaskModal from '../components/TaskModal';
 import ProjectModal from '../components/ProjectModal';
@@ -34,8 +34,6 @@ const MainLayout = () => {
     const dispatch = useDispatch();
     const projects = useSelector(allProjects);
     const projectBeingModified = useSelector((state)=> state.project.projectBeingModified);
-    const loading = useSelector(isProjectDataLoading);
-    const error = useSelector(projectDataError);
 
     useEffect(()=>{
         dispatch(fetchProjects());
@@ -59,13 +57,16 @@ const MainLayout = () => {
         }
     };
     
+    const openAddTaskModal = () => {
+        dispatch(setTaskModalVisible(true));
+    }
 
     const items = [
         {
             key: '1',
             icon: <PlusCircleFilled style={{color: '#dc4c3e', fontSize: '1.2rem'}}/>,
             label: 'Add task',
-            // onClick: showModal, // Trigger the modal on click
+            onClick: openAddTaskModal, // Trigger the modal on click
         },
         {
             key: '2',
@@ -314,7 +315,7 @@ const MainLayout = () => {
                 </Splitter.Panel>
             </Splitter>
             
-            {/* <TaskModal /> */}
+            <TaskModal />
             <ProjectModal editProjectMode={editProjectMode} setEditProjectMode={setEditProjectMode}/>
             </ConfigProvider>
 

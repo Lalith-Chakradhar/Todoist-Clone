@@ -1,59 +1,101 @@
-import React from 'react';
+import {useState} from 'react';
 
 import { Space, Input, Form, Divider, Dropdown, DatePicker, Select, Flex, Button} from 'antd';
-import useCustomContext from '../CustomContext';
 
 import { priorityLabels } from '../constants/constants';
 
+import { useSelector, useDispatch } from 'react-redux';
+
+import { addTask  } from '../features/tasks/taskSlice';
+
+import { allProjects } from '../features/projects/projectSlice';
 
 const AddTaskBox = ({setShowAddTaskBox}) => {
 
-    const {
-        addTask, 
-        handleTaskOk,
-        allProjects, 
-        setAddTask
-        } = useCustomContext();
+    const dispatch = useDispatch();
 
+    const projects = useSelector(allProjects);
+
+
+    const [addTaskDetails, setAddTaskDetails] = useState({
+                content: '',
+                description: '',
+                deadline: {date: null},
+                priority: null,
+                project_id: null,
+    }); 
 
     const handleTaskChange = (e) => {
         const { name, value } = e.target;
 
-            setAddTask((prevState) => ({
-                ...prevState,
-                [name]: value,
-              }));
+        setAddTaskDetails((prevState) => ({
+            ...prevState,
+            [name]: value,
+          }));
       };
     
       const handleDateChange = (_, dateString) => {
 
-            setAddTask((prevState) => ({
-                ...prevState,
-                Date: dateString,
-              }));
+        setAddTaskDetails((prevState) => ({
+            ...prevState,
+            deadline: {date: dateString}
+          }));
       };
 
     const handleMenuClick = (e) => {
 
-            setAddTask((prevState) => ({
-                ...prevState,
-                Priority: e.key,
-              }));
+        setAddTaskDetails((prevState) => ({
+            ...prevState,
+            priority: e.key,
+          }));
         
       };
 
       const handleProjectChange = (value) => {
 
-            setAddTask((prevState) => ({
-                ...prevState,
-                Project_id: value
-              }));
+        setAddTaskDetails((prevState) => ({
+            ...prevState,
+            project_id: value
+          }));
         
       };
 
+      
+    function handleAddTaskCancel(){
+
+        setShowAddTaskBox(false);
+
+        setAddTaskDetails({
+            content: '',
+            description: '',
+            deadline: { date: null },
+            priority: null,
+            project_id: null,
+        });
+    }
+
 
       const handleAddTaskOk = () => {
-        handleTaskOk();
+
+        if(addTaskDetails.content !== '')
+        {
+            dispatch(addTask(addTaskDetails))
+                .unwrap()
+                .then(()=>{
+                    dispatch(setTaskModalVisible(false));
+                    setAddTaskDetails({
+                        content: '',
+                        description: '',
+                        deadline: { date: null },
+                        priority: null,
+                        project_id: null,
+                    })
+                })
+                .catch((error) => {
+                    console.error("Failed to update project:", error); 
+                });
+        }
+
         setShowAddTaskBox(false);
       }
 
@@ -64,8 +106,8 @@ const AddTaskBox = ({setShowAddTaskBox}) => {
                     <Form layout="vertical" style={{ width: '100%' }}> 
                         <Form.Item style={{marginBottom: 0}}>
                             <Input 
-                                name="taskName"
-                                value={addTask.taskName} 
+                                name="content"
+                                value={addTaskDetails.content} 
                                 onChange={handleTaskChange} 
                                 placeholder="Enter the Task title"
                                 variant="borderless"
@@ -76,8 +118,8 @@ const AddTaskBox = ({setShowAddTaskBox}) => {
 
                         <Form.Item>
                             <Input
-                                name="taskDescription"
-                                value={addTask.taskDescription} 
+                                name="description"
+                                value={addTaskDetails.description} 
                                 onChange={handleTaskChange} 
                                 placeholder="Description"
                                 variant="borderless"
@@ -99,7 +141,7 @@ const AddTaskBox = ({setShowAddTaskBox}) => {
                                     }}
                                 >
                                     <Button onClick={(e) => e.preventDefault()}> 
-                                        {addTask.Priority ? `Priority ${addTask.Priority}` : "Priority"}
+                                        {addTaskDetails.priority ? `Priority ${addTaskDetails.priority}` : "Priority"}
                                     </Button>
                                 </Dropdown>
                             </Form.Item>
@@ -115,9 +157,10 @@ const AddTaskBox = ({setShowAddTaskBox}) => {
                                         width: 120,
                                         border: 'none'
                                     }}
+                                    value={addTaskDetails.project_id}
                                     placeholder="Project"
                                     onChange={handleProjectChange}
-                                    options={allProjects?.map((project) => ({
+                                    options={projects.map((project) => ({
                                         value: project.id,
                                         label: project.name,
                                     }))}
@@ -126,11 +169,11 @@ const AddTaskBox = ({setShowAddTaskBox}) => {
                             
                         
                             <Form.Item>
-                                <Button onClick={() => setShowAddTaskBox(false)}>Cancel</Button>
+                                <Button onClick={handleAddTaskCancel}>Cancel</Button>
                                 <Button 
                                 type="primary" 
                                 onClick={handleAddTaskOk} style={{marginLeft: '1em'}} 
-                                disabled={addTask.taskName.length === 0}
+                                disabled={addTaskDetails.content.length === 0}
                                 danger>Add Task</Button>
                             </Form.Item>
 

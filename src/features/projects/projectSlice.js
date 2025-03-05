@@ -6,8 +6,6 @@ const initialState = {
     allProjects: [],
     isProjectModalVisible: false,
     projectBeingModified: null,
-    loading: false,
-    error: null
 };
 
 export const fetchProjects = createAsyncThunk('project/fetchProjects',
@@ -102,7 +100,7 @@ export const fetchProjects = createAsyncThunk('project/fetchProjects',
           }
         );
   
-        return response.data; // Return updated project data from backend
+        return response.data;
       } catch (error) {
         return rejectWithValue(error.response?.data || error.message);
       }
@@ -133,17 +131,8 @@ export const fetchProjects = createAsyncThunk('project/fetchProjects',
     },
     extraReducers: (builder) => {
       builder
-        .addCase(fetchProjects.pending, (state) => {
-          state.loading = true;
-          state.error = null;
-        })
         .addCase(fetchProjects.fulfilled, (state, action) => {
-          state.loading = false;
           state.allProjects = action.payload;
-        })
-        .addCase(fetchProjects.rejected, (state, action) => {
-          state.loading = false;
-          state.error = action.error.message || 'Failed to fetch projects';
         })
         .addCase(addProject.fulfilled, (state, action) => {
           state.allProjects.push(action.payload);
@@ -156,31 +145,17 @@ export const fetchProjects = createAsyncThunk('project/fetchProjects',
         .addCase(deleteProject.fulfilled, (state, action) => {
           state.allProjects = state.allProjects.filter((project) => project.id !== action.payload);
         })
-        .addCase(toggleFavoriteInBackend.pending, (state) => {
-          state.loading = true;
-          state.error = null;
-        })
         .addCase(toggleFavoriteInBackend.fulfilled, (state, action) => {
-          state.loading = false;
           const updatedProject = action.payload;
   
-          // Update the favorite status in the state with the backend response
           state.allProjects = state.allProjects.map((project) =>
             project.id === updatedProject.id ? updatedProject : project
           );
         })
-        .addCase(toggleFavoriteInBackend.rejected, (state, action) => {
-          state.loading = false;
-          state.error = action.payload || 'Failed to update favorite status';
-        });
     },
   });
   
   export const allProjects = (state) => state.project.allProjects;
-
-  export const isProjectDataLoading = (state) => state.project.loading;
-
-  export const projectDataError = (state) => state.project.error;
 
   export const projectBeingModified = (state) => state.project.projectBeingModified;
 
