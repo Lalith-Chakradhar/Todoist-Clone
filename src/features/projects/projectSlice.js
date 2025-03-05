@@ -11,7 +11,7 @@ const initialState = {
 };
 
 export const fetchProjects = createAsyncThunk('project/fetchProjects',
-    async () => {
+    async (_,{rejectWithValue}) => {
       try {
         const response = await axios.get('https://api.todoist.com/rest/v2/projects', {
           headers: {
@@ -21,12 +21,12 @@ export const fetchProjects = createAsyncThunk('project/fetchProjects',
 
         return response.data;
       } catch (error) {
-        return error.message;
+        return rejectWithValue(error.message);
       }
     }
   );
   
-  export const addProject = createAsyncThunk('project/addProject',async (projectDetails) => {
+  export const addProject = createAsyncThunk('project/addProject',async (projectDetails, {rejectWithValue}) => {
       try {
         const response = await axios.post(
           'https://api.todoist.com/rest/v2/projects',
@@ -41,13 +41,13 @@ export const fetchProjects = createAsyncThunk('project/fetchProjects',
         );
         return response.data;
       } catch (error) {
-        return error.message;
+        return rejectWithValue(error.message);
       }
     }
   );
   
   export const updateProject = createAsyncThunk('project/updateProject',
-    async ({ id, updatedData }) => {
+    async ({ id, updatedData }, {rejectWithValue}) => {
       try {
         const response = await axios.post(
           `https://api.todoist.com/rest/v2/projects/${id}`,
@@ -61,13 +61,13 @@ export const fetchProjects = createAsyncThunk('project/fetchProjects',
         );
         return response.data;
       } catch (error) {
-        return error.message;
+        return rejectWithValue(error.message);
       }
     }
   );
   
   export const deleteProject = createAsyncThunk('project/deleteProject',
-    async (id) => {
+    async (id ,{rejectWithValue }) => {
       try {
         await axios.delete(`https://api.todoist.com/rest/v2/projects/${id}`, {
           headers: {
@@ -76,7 +76,7 @@ export const fetchProjects = createAsyncThunk('project/fetchProjects',
         });
         return id;
       } catch (error) {
-        return error.message;
+        return rejectWithValue(error.message);
       }
     }
   );

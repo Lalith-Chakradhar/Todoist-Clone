@@ -2,21 +2,51 @@ import React from "react";
 import {Modal, Radio, Button, Flex, Space, Typography, Divider} from "antd";
 import {EditOutlined, DeleteTwoTone} from '@ant-design/icons';
 import TaskModal from "./TaskModal";
-import useCustomContext from '../CustomContext';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { setTaskModalVisible, 
+  setTaskBeingEdited, 
+  toggleTaskCompletion,
+  setTaskToDelete,
+  setDeleteModalVisible,
+  deleteTask } from '../features/tasks/taskSlice';
 
 const {Text, Paragraph} = Typography;
 
 
 const TaskDisplay = ({ tasksForParticularProjectId }) => {
 
- const {editMode, 
-  isDeleteModalVisible, 
-  handleTaskDelete, 
-  taskToDelete, 
-  activateEditMode,
-  taskBeingEdited,
-  showDeleteModal, 
-  setIsDeleteModalVisible} = useCustomContext();
+//  const {editMode, 
+//   isDeleteModalVisible, 
+//   handleTaskDelete, 
+//   taskToDelete, 
+//   activateEditMode,
+//   taskBeingEdited,
+//   showDeleteModal, 
+//   setIsDeleteModalVisible} = useCustomContext();
+
+  const dispatch = useDispatch();
+  const { allTasks, isModalOpen, taskBeingEdited, editMode, isDeleteModalVisible, taskToDelete } = useSelector(state => state.task);
+
+
+  const activateEditMode = (task) => {
+    dispatch(setTaskBeingEdited(task));
+    dispatch(setTaskModalVisible(true));
+  };
+
+  const showDeleteModal = (task) => {
+    dispatch(setTaskToDelete(task));
+    dispatch(setDeleteModalVisible(true));
+  };
+
+  const handleTaskDelete = () => {
+    if (taskToDelete) {
+      dispatch(deleteTask(taskToDelete.id)); 
+      dispatch(setTaskToDelete(null));
+      dispatch(setDeleteModalVisible(false));
+    }
+  };
+
  
   return (
     <div>
@@ -31,7 +61,7 @@ const TaskDisplay = ({ tasksForParticularProjectId }) => {
                 </div>
                 <Space size='large'>
                     <Button style={{display: editMode ? 'none' : 'inline'}} onClick={()=>activateEditMode(task)} icon={<EditOutlined/>}/>
-                    {editMode && taskBeingEdited?.id === task.id &&  (<TaskModal/>)}
+                    {/* {editMode && taskBeingEdited?.id === task.id &&  (<TaskModal/>)} */}
                     <Button onClick={()=>showDeleteModal(task)} icon={<DeleteTwoTone twoToneColor='#dc4c3e'/>}/>
                 </Space>
             </Flex>
@@ -45,7 +75,7 @@ const TaskDisplay = ({ tasksForParticularProjectId }) => {
         title="Delete task?"
         open={isDeleteModalVisible}
         onOk={handleTaskDelete}
-        onCancel={() => setIsDeleteModalVisible(false)}
+        onCancel={() => dispatch(setDeleteModalVisible(false))}
         okText="Delete"
         okButtonProps={{ danger: true }}
       >

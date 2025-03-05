@@ -1,6 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, nanoid } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
 import { config } from '../../config/config';
 
 const initialState = {
@@ -14,7 +13,8 @@ const initialState = {
     error: null,
   };
 
-// Async Thunks
+
+
 export const fetchTasks = createAsyncThunk(
   'task/fetchTasks',
   async (_, { rejectWithValue }) => {
@@ -41,7 +41,7 @@ export const addTask = createAsyncThunk(
         {
           headers: {
             'Content-Type': 'application/json',
-            'X-Request-Id': uuidv4(),
+            'X-Request-Id': nanoid(),
             Authorization: `Bearer ${config.apiToken}`,
           },
         }
@@ -97,9 +97,15 @@ const taskSlice = createSlice({
     setTaskModalVisible: (state, action) => {
       state.isModalOpen = action.payload;
     },
+    setDeleteModalVisible: (state, action) =>{
+      state.isDeleteModalVisible = action.payload;
+    },
     setTaskBeingEdited: (state, action) => {
       state.taskBeingEdited = action.payload;
       state.editMode = !action.payload;
+    },
+    setTaskToDelete(state, action){
+      state.taskToDelete = action.payload;
     },
     toggleTaskCompletion: (state, action) => {
       const task = state.allTasks.find((t) => t.id === action.payload);
@@ -138,10 +144,14 @@ const taskSlice = createSlice({
   },
 });
 
+
+export const allTasks = (state) => state.task.allTasks;
+
 export const { 
   setTaskModalVisible, 
   setTaskBeingEdited, 
-  setTaskBeingDeleted,
+  setTaskToDelete,
+  setDeleteModalVisible,
   toggleTaskCompletion
 } = taskSlice.actions;
 

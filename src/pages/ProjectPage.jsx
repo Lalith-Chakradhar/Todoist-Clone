@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import useCustomContext from '../CustomContext';
+import { useDispatch, useSelector } from 'react-redux';
 import TaskDisplay from '../components/TaskDisplay';
 import { Flex, Typography, Button } from 'antd';
 import { PlusCircleFilled } from '@ant-design/icons';
 
 import AddTaskBox from '../components/AddTaskBox';
 
+import { fetchProjects, allProjects } from '../features/projects/projectSlice';
+import { fetchTasks, allTasks } from '../features/tasks/taskSlice';
+
 const { Title } = Typography;
 
 const ProjectPage = () => {
   const { id } = useParams();
-  const { fetchProjects, allProjects, fetchTasks, allTasks } = useCustomContext();
+
+  const dispatch = useDispatch();
+
+  const projects = useSelector(allProjects);
+  const tasks = useSelector(allTasks);
 
   const [projectTitle, setProjectTitle] = useState('');
   const [tasksForParticularProjectId, setTasksForParticularProjectId] = useState([]);
@@ -19,14 +26,14 @@ const ProjectPage = () => {
   const [showAddTaskBox, setShowAddTaskBox] = useState(false);
 
   useEffect(() => {
-    fetchProjects();
-    fetchTasks();
-  }, []);
+    dispatch(fetchProjects());
+    dispatch(fetchTasks());
+  }, [dispatch]);
 
 
   useEffect(() => {
-    if (allProjects && allProjects.length > 0) {
-      const project = allProjects.find((project) => project.id === id);
+    if (projects.length > 0) {
+      const project = projects.find((project) => project.id === id);
       if (project) 
       {
         setProjectTitle(project.name);
@@ -37,12 +44,12 @@ const ProjectPage = () => {
 
   useEffect(() => {
 
-    if (allTasks && allTasks.length > 0) {
-      const tasks = allTasks.filter((task) => task.project_id === id);
-      setTasksForParticularProjectId(tasks);
+    if(tasks.length > 0) {
+      const tasksOfAProject = tasks.filter((task) => task.project_id === id);
+      setTasksForParticularProjectId(tasksOfAProject);
     }
 
-  }, [allTasks, id]); // Runs when allTasks updates
+  }, [tasks, id]); // Runs when allTasks updates
 
   return (
     <div>
